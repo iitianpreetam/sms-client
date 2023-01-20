@@ -1,10 +1,12 @@
 import { FunctionComponent, ReactNode, useState } from "react";
 import Head from "next/head";
 import { Box, CssBaseline } from "@mui/material";
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
+import { ToastContainer } from 'react-toastify';
 
 import Navbar from "@/components/Navbar";
 import LeftDrawer, { DrawerHeader } from "@/components/LeftDrawer";
+
+import 'react-toastify/dist/ReactToastify.css';
 
 export interface LayoutProps {
     title?: string;
@@ -34,10 +36,11 @@ const Layout: FunctionComponent<LayoutProps> = ({
             </Head>
             <Box sx={{display: 'flex'}}>
                 <CssBaseline />
-                <Navbar open={open} handleDrawerOpen={handleDrawerOpen} drawerWidth={drawerWidth} />
+                <Navbar open={open} handleDrawerOpen={handleDrawerOpen} />
                 <LeftDrawer handleDrawerClose={handleDrawerClose} open={open} />
                 <Box component="main" sx={{ flexGrow: 1, px: 3, py:2 }}>
                     <DrawerHeader />
+                    <ToastContainer />
                     {children}
                 </Box>
             </Box>

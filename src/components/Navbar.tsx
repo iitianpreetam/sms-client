@@ -1,18 +1,19 @@
 import { FunctionComponent } from 'react';
 import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { IconButton, Toolbar, Typography } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
+import { drawerWidth } from '@/hocs/Layout';
+
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
-    drawerWidth?: number;
     handleDrawerOpen?: () => void;
 }
 
 const AppBar = styled(MuiAppBar, {
         shouldForwardProp: (prop) => prop !== 'open',
-    })<AppBarProps>(({ theme, open, drawerWidth }) => ({
+    })<AppBarProps>(({ theme, open }) => ({
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
@@ -30,7 +31,6 @@ const AppBar = styled(MuiAppBar, {
 
 const Navbar: FunctionComponent<AppBarProps> = ({
     open,
-    drawerWidth,
     handleDrawerOpen
 }) => {
     return (
@@ -39,7 +39,6 @@ const Navbar: FunctionComponent<AppBarProps> = ({
             color='transparent'
             elevation={1}
             open={open}
-            drawerWidth={drawerWidth}
             sx={{
                 backdropFilter: 'blur(10px)'
             }}

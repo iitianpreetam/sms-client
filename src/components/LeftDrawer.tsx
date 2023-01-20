@@ -1,4 +1,8 @@
 import { FunctionComponent } from 'react';
+import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@/store';
 import MuiDrawer from '@mui/material/Drawer';
 import { styled, useTheme, Theme, CSSObject } from '@mui/material/styles';
 import Divider from '@mui/material/Divider';
@@ -10,7 +14,9 @@ import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import LogoutIcon from '@mui/icons-material/Logout';
+
+import { logoutThunk } from '@/features/authSlice';
 
 import { drawerWidth } from '@/hocs/Layout';
 import { IconButton } from '@mui/material';
@@ -68,7 +74,26 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 const LeftDrawer: FunctionComponent<DrawerProps> = ({open, handleDrawerClose}) => {
+    const dispatch = useDispatch<AppDispatch>();
+    const router = useRouter();
     const theme = useTheme();
+    const notify = (msg: string) => {
+        toast(msg, {
+            toastId: 'logoutPage'
+        })
+    }
+
+    const handleLogout = async () => {
+        try{
+            const res = await dispatch(logoutThunk()).unwrap();
+            setTimeout(() => {
+                notify(res);
+            }, 1000);
+            router.push('/auth/login');
+        } catch(err: any) {
+            notify(err.error);
+        }
+    }
     return (
         <Drawer variant="permanent" open={open}>
             <DrawerHeader>
@@ -101,6 +126,31 @@ const LeftDrawer: FunctionComponent<DrawerProps> = ({open, handleDrawerClose}) =
                         </ListItemButton>
                     </ListItem>
                 ))}
+                <Divider />
+                <ListItem
+                    disablePadding 
+                    sx={{ display: 'block' }}
+                    onClick={handleLogout}
+                >
+                    <ListItemButton
+                        sx={{
+                        minHeight: 48,
+                        justifyContent: open ? 'initial' : 'center',
+                        px: 2.5,
+                        }}
+                    >
+                        <ListItemIcon
+                                sx={{
+                                    minWidth: 0,
+                                    mr: open ? 3 : 'auto',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <LogoutIcon />
+                        </ListItemIcon>
+                            <ListItemText primary='Logout' sx={{ opacity: open ? 1 : 0 }} />
+                    </ListItemButton>
+                </ListItem>
             </List>
         </Drawer>
     );
