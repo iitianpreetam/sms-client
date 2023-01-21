@@ -1,11 +1,11 @@
-import { LoginFormData } from '@/types/app-types';
+import { LoginFormData, User } from '@/types/app-types';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { nextAuthApi } from '@/services/apiServices';
 import cookie from 'cookie';
 
 export interface AuthState {
     isAuthenticated: boolean;
-    user: {} | null;
+    user: User | null;
     loading: boolean
     message: string;
 };
