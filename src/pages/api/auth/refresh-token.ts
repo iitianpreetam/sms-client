@@ -15,7 +15,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         const access = cookies.access ?? false;
         const refresh = cookies.refresh ?? false;
         if(access) return res.status(200).json({});
-        if(!access && !refresh) return res.status(401).json({'error': 'Token Expired. Login Again'});
+        if(!access && !refresh) return res.status(401).json({'error': 'Token Expired/Not Found. Login Again'});
 
         const apiRes = await tokenApi.post('/auth/token/verify', {token: refresh});
         if(apiRes.status!==200) return res.status(401).json({});

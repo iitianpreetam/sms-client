@@ -12,6 +12,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -45,6 +46,7 @@ const LoginPage = () => {
         })
     }
     const [formData, setFormData] = React.useState<LoginFormData>({username: '', password: ''});
+    const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({...formData, [e.target.name]: e.target.value});
@@ -52,16 +54,19 @@ const LoginPage = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setIsLoading(true);
         try{
             const res = await dispatch(loginThunk(formData)).unwrap();
             if(res.success) {
                 setTimeout(() => {
                     notify('Authenticated Successfully!');
                 }, 1000);
-                router.push('/');  
+                router.push('/');
+                setIsLoading(false);
             };
         } catch(err: any) {
             notify(err.error);
+            setIsLoading(false);
         }
     };
     return (
@@ -115,8 +120,10 @@ const LoginPage = () => {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
+                            size='large'
+                            startIcon={isLoading && <CircularProgress size={20} sx={{mr: 1}} color='inherit' />}
                         >
-                            Login
+                            {!isLoading ? 'Login' : 'Logging In...'}
                         </Button>
                         <Grid container>
                             <Grid item xs>

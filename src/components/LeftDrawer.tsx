@@ -20,6 +20,7 @@ import { logoutThunk } from '@/features/authSlice';
 
 import { drawerWidth } from '@/hocs/Layout';
 import { IconButton } from '@mui/material';
+import DrawerMenuItem from './DrawerMenuItem';
 
 type DrawerProps = {
     open: boolean;
@@ -105,52 +106,20 @@ const LeftDrawer: FunctionComponent<DrawerProps> = ({open, handleDrawerClose}) =
             <Divider />
             <List>
                 {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                    <ListItem key={text} disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            sx={{
-                            minHeight: 48,
-                            justifyContent: open ? 'initial' : 'center',
-                            px: 2.5,
-                            }}
-                        >
-                            <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                            </ListItemIcon>
-                            <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
-                        </ListItemButton>
-                    </ListItem>
+                    <DrawerMenuItem 
+                        key={index}
+                        open={open}
+                        icon={index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                        text={text}
+                    />
                 ))}
                 <Divider />
-                <ListItem
-                    disablePadding 
-                    sx={{ display: 'block' }}
+                <DrawerMenuItem
+                    open={open}
+                    icon={<LogoutIcon />}
+                    text='Logout'
                     onClick={handleLogout}
-                >
-                    <ListItemButton
-                        sx={{
-                        minHeight: 48,
-                        justifyContent: open ? 'initial' : 'center',
-                        px: 2.5,
-                        }}
-                    >
-                        <ListItemIcon
-                                sx={{
-                                    minWidth: 0,
-                                    mr: open ? 3 : 'auto',
-                                    justifyContent: 'center',
-                                }}
-                            >
-                                <LogoutIcon />
-                        </ListItemIcon>
-                            <ListItemText primary='Logout' sx={{ opacity: open ? 1 : 0 }} />
-                    </ListItemButton>
-                </ListItem>
+                />
             </List>
         </Drawer>
     );
