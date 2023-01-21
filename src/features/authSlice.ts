@@ -1,6 +1,7 @@
 import { LoginFormData } from '@/types/app-types';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { nextAuthApi } from '@/services/apiServices';
+import cookie from 'cookie';
 
 export interface AuthState {
     isAuthenticated: boolean;
@@ -34,8 +35,9 @@ export const refreshTokenThunk = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const res = await nextAuthApi.post('/refresh-token');
-            const data = await res.data;
-            return data;
+            const cookies = document?.cookie;
+            const user = JSON.parse(cookie.parse(cookies).user);
+            return user;
         } catch(err: any) {
             return rejectWithValue(err.response.data)
         }
@@ -66,6 +68,7 @@ export const authSlice = createSlice({
             })
             .addCase(loginThunk.fulfilled, (state, action) => {
                 state.loading = false;
+                state.user = action.payload.data
                 state.isAuthenticated = true;
                 state.message = action.payload.success
             })
@@ -79,8 +82,8 @@ export const authSlice = createSlice({
             })
             .addCase(refreshTokenThunk.fulfilled, (state, action) => {
                 state.loading = false;
+                state.user = action.payload
                 state.isAuthenticated = true;
-                state.message = action.payload.success
             })
             .addCase(refreshTokenThunk.rejected, (state, action) => {
                 state.loading = false;

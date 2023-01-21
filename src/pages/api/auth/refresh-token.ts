@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import cookie from 'cookie';
-import { tokenApi } from '@/services/apiServices';
+import { serverApi } from '@/services/apiServices';
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     if(req.method !== 'POST') {
@@ -17,10 +17,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
         if(access) return res.status(200).json({});
         if(!access && !refresh) return res.status(401).json({'error': 'Token Expired/Not Found. Login Again'});
 
-        const apiRes = await tokenApi.post('/auth/token/verify', {token: refresh});
+        const apiRes = await serverApi.post('/auth/token/verify', {token: refresh});
         if(apiRes.status!==200) return res.status(401).json({});
 
-        const refreshApi = await tokenApi.post('/auth/token/refresh', {refresh: refresh});
+        const refreshApi = await serverApi.post('/auth/token/refresh', {refresh: refresh});
         if(refreshApi.status !== 200) return res.status(401).json({});
 
         res.setHeader('Set-Cookie', cookie.serialize(
